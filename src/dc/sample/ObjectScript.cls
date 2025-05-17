@@ -40,4 +40,139 @@ print("Current time is:",datetime.now())
 return a
 }
 
+ClassMethod Diabetes() As %Status
+{
+    Set sc = $$$OK
+    Set fhir = {
+    "resourceType": "Bundle",
+    "type": "collection",
+    "entry": [
+        {
+        "resource": {
+            "resourceType": "Patient",
+            "id": "diabetes-example",
+            "name": [
+            {
+                "use": "official",
+                "family": "Doe",
+                "given": ["Jane"]
+            }
+            ],
+            "gender": "female",
+            "birthDate": "1975-08-15"
+        }
+        },
+        {
+        "resource": {
+            "resourceType": "Observation",
+            "id": "fasting-glucose",
+            "status": "final",
+            "category": [
+            {
+                "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "laboratory",
+                    "display": "Laboratory"
+                }
+                ]
+            }
+            ],
+            "code": {
+            "coding": [
+                {
+                "system": "http://loinc.org",
+                "code": "1558-6",
+                "display": "Glucose [Mass/volume] in Blood"
+                }
+            ]
+            },
+            "subject": {
+            "reference": "Patient/diabetes-example"
+            },
+            "effectiveDateTime": "2023-10-01T08:00:00+00:00",
+            "valueQuantity": {
+            "value": 130,
+            "unit": "mg/dL",
+            "system": "http://unitsofmeasure.org",
+            "code": "mg/dL"
+            },
+            "referenceRange": [
+            {
+                "low": {
+                "value": 70,
+                "unit": "mg/dL",
+                "system": "http://unitsofmeasure.org",
+                "code": "mg/dL"
+                },
+                "high": {
+                "value": 99,
+                "unit": "mg/dL",
+                "system": "http://unitsofmeasure.org",
+                "code": "mg/dL"
+                }
+            }
+            ]
+        }
+        },
+        {
+        "resource": {
+            "resourceType": "Observation",
+            "id": "hba1c",
+            "status": "final",
+            "category": [
+            {
+                "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "laboratory",
+                    "display": "Laboratory"
+                }
+                ]
+            }
+            ],
+            "code": {
+            "coding": [
+                {
+                "system": "http://loinc.org",
+                "code": "4548-4",
+                "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+                }
+            ]
+            },
+            "subject": {
+            "reference": "Patient/diabetes-example"
+            },
+            "effectiveDateTime": "2023-10-01T08:00:00+00:00",
+            "valueQuantity": {
+            "value": 7.5,
+            "unit": "%",
+            "system": "http://unitsofmeasure.org",
+            "code": "%"
+            },
+            "referenceRange": [
+            {
+                "low": {
+                "value": 4.0,
+                "unit": "%",
+                "system": "http://unitsofmeasure.org",
+                "code": "%"
+                },
+                "high": {
+                "value": 5.6,
+                "unit": "%",
+                "system": "http://unitsofmeasure.org",
+                "code": "%"
+                }
+            }
+            ]
+        }
+        }
+    ]
+    }
+    Set output = ##class(dc.FHIRInsight.Core).Execute(fhir.%ToJSON())
+    W output
+    Return sc
+}
+
 }
