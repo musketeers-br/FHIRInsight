@@ -19,7 +19,10 @@ ClassMethod Execute(pFHIRinput As %String) [ Language = python ]
 
     from langchain.globals import set_verbose, set_debug
     from langchain_core.exceptions import OutputParserException
-    set_verbose(True)
+    from langchain.output_parsers import StructuredOutputParser
+    from langchain.output_parsers.openai_functions import JsonOutputFunctionsParser
+    from langchain.agents.output_parsers import ReActSingleInputOutputParser
+    set_verbose(False)  # Disable verbose output to reduce noise
 
     load_dotenv()
 
@@ -74,34 +77,32 @@ ClassMethod Execute(pFHIRinput As %String) [ Language = python ]
 
         # Define tools with proper error handling
         @tool
-        def get_company_info(company_url: str) -> dict:
+        def duckduckgo_searcher(query: str, max_results: int = 5) -> list:
+            """Search the web for information using DuckDuckGo.
+            
+            Args:
+                query: The search query string
+                max_results: Maximum number of results to return (default: 5)
+                
+            Returns:
+                List of search results with title, link, and snippet
             """
-                Fetch detailed information about a company from LinkedIn, 
-                including phone, headline, domain, and size.
-            """
-            if not isinstance(company_url, str):
-                return {"error": "Invalid URL type"}
-            return iris.cls(__name__).LinkedInCompanyExtactor(company_url)
-
-        def searcher_by_sector(company_sector: str, region: str = "br") -> list:
-            """Search companies by sector in LinkedIn"""
-            if not isinstance(company_sector, str):
-                return []
-            find_by = f"empresas {company_sector} linkedin"
-            return iris.cls(__name__).SearcherTool(find_by, region)
+            if not isinstance(query, str) or not query.strip():
+                return {"error": "Invalid or empty query"}
+            
+            try:
+                results = json.loads(iris.cls(__name__).DuckDuckGo(query, max_results))
+                return results
+            except Exception as e:
+                return {"error": f"Search failed: {str(e)}"}
 
 
         # Define tools list
         tools = [
             Tool(
-                name="searcher_by_sector",
-                func=searcher_by_sector,
-                description="Search companies by sector in LinkedIn"
-            ),
-            Tool(
-                name="get_company_info",
-                func=get_company_info,
-                description="Fetch detailed and precise information about a company from LinkedIn, including phone, website, headline, domain, and size."
+                name="duckduckgo_searcher",
+                func=duckduckgo_searcher,
+                description="Search the web for information using DuckDuckGo"
             )
         ]
 
@@ -115,57 +116,55 @@ ClassMethod Execute(pFHIRinput As %String) [ Language = python ]
         llm = get_llm()
 
         template = """
-    You are a proficient medical analyst with extensive experience in interpreting blood test results and 
-    using internet resources to provide comprehensive health recommendations. 
-    You have access to {tools} for sourcing additional information.
+        You are a proficient medical analyst with extensive experience in interpreting blood test results and 
+        using internet resources to provide comprehensive health recommendations. 
+        You have access to {tools} for sourcing additional information.
 
-    Please generate a detailed medical analysis and health recommendation report using the provided 
-    FHIR JSON data for a patient's blood test results. 
-    
-    Use EXACTLY the following format:
+        Please generate a detailed medical analysis and health recommendation report using the provided 
+        FHIR JSON data for a patient's blood test results. 
+        
+        IMPORTANT: You MUST follow this EXACT format for your reasoning process:
 
-    ```
-    Thought: I need to analyze the Input and determine the next step
-    Action: the action to be taken, must be one of [{tool_names}]
-    Action Input: [tool input]
-    Observation: [tool output]
-    ... (this Thought/Action/Action Input/Observation can repeat N times)
-    Thought: now I know the final answer
-    Final Answer: [Detailed JSON array with analysis and recommendations]
-    ```
+        ```
+        Thought: <your reasoning about what to do next>
+        Action: <MUST be one of these tools: {tool_names}>
+        Action Input: <input for the tool>
+        Observation: <result from the tool>
+        ... (this Thought/Action/Action Input/Observation can repeat)
+        Thought: <your final reasoning>
+        Final Answer: <your detailed narrative health report>
+        ```
+        
+        {agent_scratchpad}
 
-    {agent_scratchpad}
+        **Analysis Requirements:**
 
-    **Analysis Requirements:**
+        Your Final Answer MUST be a detailed narrative report with the following sections:
 
-    **1. Summary of Key Health Indicators:**
-    - Identify and summarize significant health indicators from the blood test data.
-    - Highlight abnormalities in glucose and Hemoglobin A1c levels, and any other noteworthy values.
+        **1. Summary of Key Health Indicators:**
+        - Provide specific test values with their reference ranges (e.g., "Fasting Glucose: 130 mg/dL (normal range: 70-99 mg/dL)")
+        - Highlight abnormalities in glucose, Hemoglobin A1c levels, and any other noteworthy values
 
-    **2. Disease and Condition Identification:**
-    - Assess the test results to identify potential indicators for:
-        - Anemia
-        - Allergies
-        - Infections
-        - Diabetes
-        - Liver Disease
-        - Kidney Disease
-        - Thyroid Disorders
-        - Heart Disease
-        - Blood Clotting Disorders
-        - Autoimmune Diseases
-        - Nutritional Deficiencies
-        - Cancer
-        - HIV/AIDS
-        - Hormonal Imbalances
-        - Bone Disorders
+        **2. Disease and Condition Identification:**
+        - Assess the test results to identify potential indicators for: Anemia, Allergies, Infections, Diabetes, Liver Disease, Kidney Disease, 
+            Thyroid Disorders, Heart Disease, Blood Clotting Disorders, Autoimmune Diseases, Nutritional Deficiencies, 
+            Cancer, HIV/AIDS, Hormonal Imbalances, Bone Disorders
+        - Clearly state if there is insufficient data to assess certain conditions
 
-    **3. Health Recommendations:**
-    - Provide medically intensive recommendations based on analysis and insights gained from DuckDuckGoSearch.
-    - Include specific nutritional and lifestyle advice to potentially aid in managing identified conditions.
-    - Always include URLs for the sources of information used.
+        **3. Health Recommendations:**
+        - Provide detailed medical management recommendations:
+            - Consultation needs with specific healthcare providers
+        - Include comprehensive nutritional and lifestyle recommendations:
+            - Specific dietary guidelines with examples
+            - Follow-up care and screening recommendations
+        - For each condition identified, include:
+            - Condition name
+            - Detailed recommendations
+            - Source URL for medical information
 
-    Ensure that the final output is suitable for medical professionals and healthcare workers, with detailed insights and professional terminology.
+        Format your report as a detailed narrative with clear section headers, bullet points for readability, 
+        and professional medical terminology suitable for healthcare workers. Include specific values, reference ranges, 
+        and detailed explanations throughout.
         """
 
         # Import the necessary agent components
@@ -176,7 +175,11 @@ ClassMethod Execute(pFHIRinput As %String) [ Language = python ]
         # Create a proper ReAct agent with the correct prompt template
         prompt = ChatPromptTemplate.from_template(template)
         
-        # Create a proper ReAct agent
+        # Configure LLM with stricter formatting requirements
+        if hasattr(llm, "model_kwargs"):
+            llm.model_kwargs.update({"response_format": {"type": "text"}})
+        
+        # Create a proper ReAct agent with structured output format
         agent = create_react_agent(
             llm=llm,
             tools=tools,
@@ -186,24 +189,34 @@ ClassMethod Execute(pFHIRinput As %String) [ Language = python ]
             )
         )
         
-        # Create an agent executor
+        # Create an agent executor with max iterations limit and error handling
         agent_executor = AgentExecutor(
             agent=agent,
             tools=tools,
             verbose=True,
-            handle_parsing_errors=True
+            handle_parsing_errors=True,
+            max_iterations=8,  # Limit the number of iterations to prevent excessive resource usage
+            early_stopping_method="force",  # Force stop after max_iterations
+            return_intermediate_steps=False  # Don't include intermediate steps in the output
         )
         
-        # Execute the agent with the FHIR input
-        result = agent_executor.invoke(
-            {
-                "input": pFHIRinput
-            }
-        )
+        # Execute the agent with the FHIR input and handle potential errors
+        try:
+            result = agent_executor.invoke(
+                {
+                    "input": pFHIRinput
+                }
+            )
+        except OutputParserException as e:
+            # If parsing fails, extract the final answer directly
+            if hasattr(e, 'llm_output') and isinstance(e.llm_output, str):
+                if "Final Answer:" in e.llm_output:
+                    final_answer = e.llm_output.split("Final Answer:")[1].strip()
+                    return json.dumps({"insight_report": final_answer})
+            return json.dumps({"error": "Failed to parse agent output", "details": str(e)})
         
         # Return the output from the agent execution
         return result.get("output", json.dumps({"error": "No output generated by agent"}))
-
 
     except json.JSONDecodeError as e:
         return json.dumps({"error": f"Error parsing company info JSON: {str(e)}"})
@@ -211,6 +224,19 @@ ClassMethod Execute(pFHIRinput As %String) [ Language = python ]
         return json.dumps({"error": f"Validation error: {str(e)}"})
     except Exception as e:
         return json.dumps({"error": f"Unexpected error: {str(e)}"})
+}
+
+ClassMethod DuckDuckGo(query As %String, maxResults As %Integer = 5) [ Language = python ]
+{
+    import json
+    from duckduckgo_search import DDGS
+    
+    try:
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=maxResults))
+            return json.dumps(results)
+    except Exception as e:
+        return json.dumps({"error": f"DuckDuckGo search error: {str(e)}"})
 }
 
 }
