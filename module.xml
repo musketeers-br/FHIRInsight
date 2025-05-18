@@ -8,6 +8,7 @@
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="dc.FHIRInsight.PKG"/>
+      <CSPApplication CookiePath="/FHIRInsight/" DefaultTimeout="900" DispatchClass="dc.FHIRInsight.api.disp" PasswordAuthEnabled="1" Recurse="1" ServeFiles="1" ServeFilesTimeout="3600" UnauthenticatedEnabled="0" Url="/FHIRInsight" UseSessionCookie="2"/>
     </Module>
   </Document>
 </Export>

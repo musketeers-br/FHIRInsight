@@ -7,9 +7,9 @@ services:
     restart: always
     command: --check-caps false --ISCAgent false
     ports:
-      - 1972
-      - 52773
-      - 53773
+      - 61972:1972
+      - 62773:52773
+      - 63773:53773
     volumes:
       - ./:/home/irisowner/dev
     environment:
@@ -18,3 +18,4 @@ services:
       - LLM_MODEL_NAME=$LLM_MODEL_NAME
       - AZURE_ENDPOINT=$AZURE_ENDPOINT
       - API_VERSION=$API_VERSION
+      - OPENAI_API_KEY:$OPENAI_API_KEY
