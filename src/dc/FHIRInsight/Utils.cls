@@ -52,4 +52,20 @@ ClassMethod PipInstall(pLib As %String) [ Language = python ]
         print(f"Please install it manually using: pip install {pLib}")
 }
 
+ClassMethod StartProduction()
+{
+    Set pProductionName = "dc.FHIRInsight.i14y.FHIRAnalyzerProduction"
+    Set attempt = 0
+    Set maxAttempts = 10
+    While (attempt < maxAttempts) && '##class(Ens.Director).IsProductionRunning(pProductionName) {
+        Hang 1
+        Do ##class(Ens.Director).SetAutoStart(pProductionName)
+            Do ##class(Ens.Director).StartProduction(pProductionName)
+            Set attempt = attempt + 1
+    }
+    If '##class(Ens.Director).IsProductionRunning(pProductionName) {
+        Write "Produciton "_pProductionName_" couldn't be started. Please start it manually."
+    }
+}
+
 }

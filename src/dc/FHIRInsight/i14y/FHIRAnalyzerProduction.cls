@@ -3,7 +3,7 @@ Class dc.FHIRInsight.i14y.FHIRAnalyzerProduction Extends Ens.Production
 
 XData ProductionDefinition
 {
-<Production Name="myapp.FHIRAnalyzer" TestingEnabled="true" LogGeneralTraceEvents="false">
+<Production Name="dc.FHIRInsight.i14y.FHIRAnalyzerProduction" TestingEnabled="true" LogGeneralTraceEvents="false">
   <Description></Description>
   <ActorPoolSize>2</ActorPoolSize>
   <Item Name="LLMService" Category="" ClassName="dc.FHIRInsight.i14y.LLM.Operation.LiteLLMBO" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
