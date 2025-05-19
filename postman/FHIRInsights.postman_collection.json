@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "02f016ae-bf19-4c23-aa50-ba720cb1c2ba",
+		"name": "FHIRInsights",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3176642"
+	},
+	"item": [
+		{
+			"name": "http://localhost:62773/FHIRInsight/analyze",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"resourceType\": \"Bundle\",\r\n  \"type\": \"collection\",\r\n  \"entry\": [\r\n    {\r\n      \"resource\": {\r\n        \"resourceType\": \"Patient\",\r\n        \"id\": \"example\",\r\n        \"name\": [\r\n          {\r\n            \"use\": \"official\",\r\n            \"family\": \"DUMMY\",\r\n            \"given\": [\"John\"]\r\n          }\r\n        ],\r\n        \"gender\": \"male\",\r\n        \"birthDate\": \"1993-05-14\"\r\n      }\r\n    },\r\n    {\r\n      \"resource\": {\r\n        \"resourceType\": \"Observation\",\r\n        \"id\": \"hemoglobin\",\r\n        \"status\": \"final\",\r\n        \"category\": [\r\n          {\r\n            \"coding\": [\r\n              {\r\n                \"system\": \"http://terminology.hl7.org/CodeSystem/observation-category\",\r\n                \"code\": \"laboratory\",\r\n                \"display\": \"Laboratory\"\r\n              }\r\n            ]\r\n          }\r\n        ],\r\n        \"code\": {\r\n          \"coding\": [\r\n            {\r\n              \"system\": \"http://loinc.org\",\r\n              \"code\": \"718-7\",\r\n              \"display\": \"Hemoglobin [Mass/volume] in Blood\"\r\n            }\r\n          ]\r\n        },\r\n        \"subject\": {\r\n          \"reference\": \"Patient/example\"\r\n        },\r\n        \"effectiveDateTime\": \"2023-05-14T11:03:00+05:30\",\r\n        \"valueQuantity\": {\r\n          \"value\": 15.00,\r\n          \"unit\": \"g/dL\",\r\n          \"system\": \"http://unitsofmeasure.org\",\r\n          \"code\": \"g/dL\"\r\n        },\r\n        \"referenceRange\": [\r\n          {\r\n            \"low\": {\r\n              \"value\": 13.00,\r\n              \"unit\": \"g/dL\",\r\n              \"system\": \"http://unitsofmeasure.org\",\r\n              \"code\": \"g/dL\"\r\n            },\r\n            \"high\": {\r\n              \"value\": 17.00,\r\n              \"unit\": \"g/dL\",\r\n              \"system\": \"http://unitsofmeasure.org\",\r\n              \"code\": \"g/dL\"\r\n            }\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    {\r\n      \"resource\": {\r\n        \"resourceType\": \"Observation\",\r\n        \"id\": \"rbc-count\",\r\n        \"status\": \"final\",\r\n        \"category\": [\r\n          {\r\n            \"coding\": [\r\n              {\r\n                \"system\": \"http://terminology.hl7.org/CodeSystem/observation-category\",\r\n                \"code\": \"laboratory\",\r\n                \"display\": \"Laboratory\"\r\n              }\r\n            ]\r\n          }\r\n        ],\r\n        \"code\": {\r\n          \"coding\": [\r\n            {\r\n              \"system\": \"http://loinc.org\",\r\n              \"code\": \"789-8\",\r\n              \"display\": \"Erythrocytes [#/volume] in Blood\"\r\n            }\r\n          ]\r\n        },\r\n        \"subject\": {\r\n          \"reference\": \"Patient/example\"\r\n        },\r\n        \"effectiveDateTime\": \"2023-05-14T11:03:00+05:30\",\r\n        \"valueQuantity\": {\r\n          \"value\": 4.50,\r\n          \"unit\": \"10^6/uL\",\r\n          \"system\": \"http://unitsofmeasure.org\",\r\n          \"code\": \"10*6/uL\"\r\n        },\r\n        \"referenceRange\": [\r\n          {\r\n            \"low\": {\r\n              \"value\": 4.50,\r\n              \"unit\": \"10^6/uL\",\r\n              \"system\": \"http://unitsofmeasure.org\",\r\n              \"code\": \"10*6/uL\"\r\n            },\r\n            \"high\": {\r\n              \"value\": 5.50,\r\n              \"unit\": \"10^6/uL\",\r\n              \"system\": \"http://unitsofmeasure.org\",\r\n              \"code\": \"10*6/uL\"\r\n            }\r\n          }\r\n        ]\r\n      }\r\n    }\r\n    // Additional observations for other test results would follow the same pattern\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:62773/FHIRInsight/analyze",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62773",
+					"path": [
+						"FHIRInsight",
+						"analyze"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
