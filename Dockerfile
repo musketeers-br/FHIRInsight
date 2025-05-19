@@ -17,6 +17,7 @@ WORKDIR /home/irisowner/dev
 ARG TESTS=0
 ARG MODULE="dc-sample"
 ARG NAMESPACE="IRISAPP"
+ARG OPENAI_API_KEY=""
 
 ## Embedded Python environment
 ENV IRISUSERNAME "_SYSTEM"
@@ -24,6 +25,7 @@ ENV IRISPASSWORD "SYS"
 ENV IRISNAMESPACE $NAMESPACE
 ENV PYTHON_PATH=/usr/irissys/bin/
 ENV PATH "/usr/irissys/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/irisowner/bin"
+ENV OPENAI_API_KEY=$OPENAI_API_KEY
 
 COPY .iris_init /home/irisowner/.iris_init
 
