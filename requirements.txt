@@ -2,10 +2,5 @@ python-dotenv
 pandas
 openai
 SQLAlchemy
-langchain
-langchain-iris
-langchain_community
 requests==2.31.0
-duckduckgo_search
-beautifulsoup4
 litellm

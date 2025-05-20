@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "example-patient",
+        "name": [
+          {
+            "use": "official",
+            "family": "Ramsey",
+            "given": ["John"]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1985-03-22"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "blood-test-pt",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "5902-2",
+              "display": "Prothrombin time (PT) [Time] in Blood"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/example-patient"
+        },
+        "valueQuantity": {
+          "value": 18.0,
+          "unit": "seconds",
+          "system": "http://unitsofmeasure.org",
+          "code": "s"
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "H",
+                "display": "High"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "blood-test-inr",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "34714-6",
+              "display": "International normalized ratio (INR) [Ratio] in Blood"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/example-patient"
+        },
+        "valueQuantity": {
+          "value": 3.5,
+          "unit": "ratio",
+          "system": "http://unitsofmeasure.org",
+          "code": "ratio"
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "H",
+                "display": "High"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
