@@ -138,7 +138,7 @@ Method OnAfterProductionStart() As %Status
     #; Set tSC = ..SendRequest("RESTAPI", request, .response, 1)
     #; Do $$$AssertEquals(response.StringValue,"OK","Response should contain OK.")
     #; Set llmRequest = ##class(dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest).%New()
-    Set llmRequest = ##class(tests.dc.FHIRInsight.unittests.LiteLLMRequestMock).%New()
+    Set llmRequest = ##class(tests.dc.FHIRInsight.unittests.i14y.LiteLLMRequestMock).%New()
     Set llmRequest.Model = "openai/o4-mini"
     Set prompt = 
         "You are a proficient medical analyst with extensive experience in interpreting blood test results and providing comprehensive health recommendations. "_$c(10)_

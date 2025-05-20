@@ -13,9 +13,10 @@ services:
     volumes:
       - ./:/home/irisowner/dev
     environment:
+      - FHIR_INSIGHT_LLM_MODEL=${FHIR_INSIGHT_LLM_MODEL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - AI_ENGINE=$AI_ENGINE
       - API_KEY=$API_KEY
       - LLM_MODEL_NAME=$LLM_MODEL_NAME
       - AZURE_ENDPOINT=$AZURE_ENDPOINT
       - API_VERSION=$API_VERSION
-      - OPENAI_API_KEY=${OPENAI_API_KEY}

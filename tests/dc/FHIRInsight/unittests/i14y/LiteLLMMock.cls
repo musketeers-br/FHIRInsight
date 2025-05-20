@@ -1,4 +1,4 @@
-Class tests.dc.FHIRInsight.unittests.LiteLLMMock Extends %RegisteredObject
+Class tests.dc.FHIRInsight.unittests.i14y.LiteLLMMock Extends %RegisteredObject
 {
 
 Method completion(model, messages) [ Language = python ]

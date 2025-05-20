@@ -4,6 +4,23 @@ Class dc.FHIRInsight.i14y.FHIRAnalysisService Extends Ens.BusinessService
 /// An adapaterless BS
 Parameter ADAPTER;
 
+Property LLMModel As %String [ Internal, Private ];
+
+Method GetLLMModel() As %String
+{
+    If ..LLMModel = "" {
+        Set ..LLMModel = ##class(dc.FHIRInsight.i14y.Utils).ResolveModelValue(
+            ..GetProductionSettingValue("LLMModel")
+        )
+        If ..LLMModel = "" {
+            Throw ##class(%Exception.General).%New("LLM Model undefined.")
+        }
+        $$$LOGINFO("LLM Model: "_..LLMModel)
+    }
+
+	Quit ..LLMModel
+}
+
 Method OnProcessInput(pInput As dc.FHIRInsight.i14y.FHIRBundleRequest, Output pOutput As dc.FHIRInsight.i14y.FHIRAnalysisResponse) As %Status
 {
     #dim ex As %Exception.AbstractException
@@ -21,7 +38,7 @@ Method OnProcessInput(pInput As dc.FHIRInsight.i14y.FHIRBundleRequest, Output pO
         
         // Create and configure the LLM request
         Set llmRequest = ##class(dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest).%New()
-        Set llmRequest.Model = "openai/o4-mini"
+        Set llmRequest.Model = ..GetLLMModel()
         
         // Build the medical analysis prompt
         Set prompt = 

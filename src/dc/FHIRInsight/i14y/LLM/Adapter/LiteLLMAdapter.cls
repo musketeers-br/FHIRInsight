@@ -15,7 +15,7 @@ Property BaseURL As %String;
 Property Timeout As %Numeric [ InitialExpression = 30 ];
 
 /// Default model to use if not specified in request
-Property DefaultModel As %String [ InitialExpression = "gpt-3.5-turbo" ];
+Property DefaultModel As %String [ InitialExpression = "o4-mini" ];
 
 /// Maximum retry attempts for failed calls
 Property MaxRetries As %Integer [ InitialExpression = 0 ];
@@ -64,8 +64,8 @@ Method OnInit() As %Status
 
 Method GetLiteLLMInstance(pRequest As dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest) As %SYS.Python
 {
-    If (pRequest.%IsA("tests.dc.FHIRInsight.unittests.LiteLLMRequestMock")) {
-        Return ##class(tests.dc.FHIRInsight.unittests.LiteLLMMock).%New()
+    If (pRequest.%IsA("tests.dc.FHIRInsight.unittests.i14y.LiteLLMRequestMock")) {
+        Return ##class(tests.dc.FHIRInsight.unittests.i14y.LiteLLMMock).%New()
     }
     Return ..litellm
 }
@@ -82,8 +82,8 @@ Method CallLiteLLM(pRequest As dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest, 
         Set tAttempt = tAttempt + 1
         
         Try {
-            // Call LiteLLM via Python Gateway
-            Set model = $Select(pRequest.Model '= "": pRequest.Model, 1: ..DefaultModel)
+            // Call LiteLLM
+            Set model = $Select(pRequest.Model '= "": pRequest.Model, 1: ..GetDefaultModel())
             Set messages = ..json.loads(pRequest.Messages)
             Set tResponse = litellm.completion(model, messages)
         
@@ -125,6 +125,11 @@ Method CallLiteLLM(pRequest As dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest, 
 ClassMethod hasattr(obj As %SYS.Python, attr As %String) [ Language = python ]
 {
     return hasattr(obj, attr)
+}
+
+Method GetDefaultModel() AS %String
+{
+    Return ##class(dc.FHIRInsight.i14y.Utils).ResolveModelValue(..DefaultModel)
 }
 
 }
