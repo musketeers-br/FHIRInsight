@@ -62,12 +62,21 @@ Method OnInit() As %Status
     Quit tSC
 }
 
+Method GetLiteLLMInstance(pRequest As dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest) As %SYS.Python
+{
+    If (pRequest.%IsA("tests.dc.FHIRInsight.unittests.LiteLLMRequestMock")) {
+        Return ##class(tests.dc.FHIRInsight.unittests.LiteLLMMock).%New()
+    }
+    Return ..litellm
+}
+
 Method CallLiteLLM(pRequest As dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest, Output pResponse As dc.FHIRInsight.i14y.LLM.Messages.LiteLLMResponse) As %Status
 {
     Set tSC = $$$OK
     Set tAttempt = 0
 
     Set pResponse = ##class(dc.FHIRInsight.i14y.LLM.Messages.LiteLLMResponse).%New()
+    Set litellm = ..GetLiteLLMInstance(pRequest)
     
     While tAttempt <= ..MaxRetries {
         Set tAttempt = tAttempt + 1
@@ -76,7 +85,7 @@ Method CallLiteLLM(pRequest As dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest, 
             // Call LiteLLM via Python Gateway
             Set model = $Select(pRequest.Model '= "": pRequest.Model, 1: ..DefaultModel)
             Set messages = ..json.loads(pRequest.Messages)
-            Set tResponse = ..litellm.completion(model, messages)
+            Set tResponse = litellm.completion(model, messages)
         
             // Map to our response object
             Set pResponse.Model = tResponse.model
@@ -116,20 +125,6 @@ Method CallLiteLLM(pRequest As dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest, 
 ClassMethod hasattr(obj As %SYS.Python, attr As %String) [ Language = python ]
 {
     return hasattr(obj, attr)
-}
-
-/// Helper method to get available models
-Method GetAvailableModels(Output pModels As %String) As %Status
-{
-    Set tSC = $$$OK
-    Try {
-        Set tModelsJSON = ..litellm.models()
-        Set pModels = {}.%FromJSON(tModelsJSON)
-    }
-    Catch e {
-        Set tSC = e.AsStatus()
-    }
-    Quit tSC
 }
 
 }
