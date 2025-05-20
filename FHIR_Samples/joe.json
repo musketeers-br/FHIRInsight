@@ -10,17 +10,17 @@
           {
             "use": "official",
             "family": "DUMMY",
-            "given": ["Carter"]
+            "given": ["Joe"]
           }
         ],
         "gender": "male",
-        "birthDate": "1993-05-14"
+        "birthDate": "1985-08-22"
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
-        "id": "hemoglobin",
+        "id": "hemoglobin-low",
         "status": "final",
         "category": [
           {
@@ -43,11 +43,11 @@
           ]
         },
         "subject": {
-          "reference": "Patient/example"
+          "reference": "Patient/phillipe-example"
         },
-        "effectiveDateTime": "2023-05-14T11:03:00+05:30",
+        "effectiveDateTime": "2023-11-15T09:45:00+01:00",
         "valueQuantity": {
-          "value": 15.00,
+          "value": 11.2,
           "unit": "g/dL",
           "system": "http://unitsofmeasure.org",
           "code": "g/dL"
@@ -55,17 +55,28 @@
         "referenceRange": [
           {
             "low": {
-              "value": 13.00,
+              "value": 13.5,
               "unit": "g/dL",
               "system": "http://unitsofmeasure.org",
               "code": "g/dL"
             },
             "high": {
-              "value": 17.00,
+              "value": 17.5,
               "unit": "g/dL",
               "system": "http://unitsofmeasure.org",
               "code": "g/dL"
             }
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "L",
+                "display": "Low"
+              }
+            ]
           }
         ]
       }
@@ -73,7 +84,7 @@
     {
       "resource": {
         "resourceType": "Observation",
-        "id": "rbc-count",
+        "id": "hematocrit-low",
         "status": "final",
         "category": [
           {
@@ -90,35 +101,46 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "code": "789-8",
-              "display": "Erythrocytes [#/volume] in Blood"
+              "code": "4544-3",
+              "display": "Hematocrit [Volume Fraction] of Blood"
             }
           ]
         },
         "subject": {
-          "reference": "Patient/example"
+          "reference": "Patient/phillipe-example"
         },
-        "effectiveDateTime": "2023-05-14T11:03:00+05:30",
+        "effectiveDateTime": "2023-11-15T09:45:00+01:00",
         "valueQuantity": {
-          "value": 4.50,
-          "unit": "10^6/uL",
+          "value": 30,
+          "unit": "%",
           "system": "http://unitsofmeasure.org",
-          "code": "10*6/uL"
+          "code": "%"
         },
         "referenceRange": [
           {
             "low": {
-              "value": 4.50,
-              "unit": "10^6/uL",
+              "value": 38,
+              "unit": "%",
               "system": "http://unitsofmeasure.org",
-              "code": "10*6/uL"
+              "code": "%"
             },
             "high": {
-              "value": 5.50,
-              "unit": "10^6/uL",
+              "value": 48,
+              "unit": "%",
               "system": "http://unitsofmeasure.org",
-              "code": "10*6/uL"
+              "code": "%"
             }
+          }
+        ],
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "L",
+                "display": "Low"
+              }
+            ]
           }
         ]
       }

@@ -10,7 +10,7 @@
           {
             "use": "official",
             "family": "DUMMY",
-            "given": ["John"]
+            "given": ["Joe"]
           }
         ],
         "gender": "male",

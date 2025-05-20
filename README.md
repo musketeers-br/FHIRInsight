@@ -76,7 +76,7 @@ For instance:
 curl --location 'http://localhost:62773/FHIRInsight/analyze' \
 --user _system:SYS \
 --header 'Content-Type: application/json' \
---data-binary '@./data/sample1.json'
+--data-binary '@./FHIR_Samples/joe.json'
 ```
 
 If you use Postman, you can find a collection for your convinience [here](./postman/FHIRInsights.postman_collection.json)
