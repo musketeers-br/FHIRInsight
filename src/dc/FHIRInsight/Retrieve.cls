@@ -1,24 +1,19 @@
-Class dc.FHIRInsight.Ingest Extends %RegisteredObject
+Class dc.FHIRInsight.Retrieve Extends %RegisteredObject
 {
 
-Parameter collectionName = "FHIRInsightRAG";
-
-ClassMethod WebIngest(pURLs As %String) As %String [ Language = python ]
+ClassMethod RetrieveAnswer(input As %String) As %String [ Language = python ]
 {
     import os
     import json
     import iris
     from dotenv import load_dotenv
     from langchain_iris import IRISVector
-    from langchain_community.document_loaders import WebBaseLoader
-    from langchain_text_splitters import RecursiveCharacterTextSplitter
 
     load_dotenv()
 
     embedding = ""
     llm_model, model_name = os.getenv("FHIR_INSIGHT_LLM_MODEL").split("/")
 
-    urls = json.loads(pURLs)
     try:
         if llm_model == "openai":
             iris.cls("dc.FHIRInsight.Utils").CheckOpenAi()
@@ -36,21 +31,17 @@ ClassMethod WebIngest(pURLs As %String) As %String [ Language = python ]
     except Exception as err:
         return json.dumps({"error": str(err)})
 
+    top_k = 3
     try:
-        loader = WebBaseLoader(urls)
-        docs = loader.load()
-
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        splits = text_splitter.split_documents(docs)
-
-        vectorstore = IRISVector.from_documents(
-            documents=splits,
-            embedding=embedding,
-            dimension=1536,
-            collection_name=iris.cls(__name__)._GetParameter("collectionName"),
+        vectorstore = IRISVector(
+            embedding_function = embedding,
+            dimension =1536,
+            collection_name=iris.cls("dc.FHIRInsight.Ingest")._GetParameter("collectionName")
         )
+        docs_with_score = example_db.similarity_search_with_score(input, k=top_k+top_k)
+        selector = ["".join(str(doc.page_content)) + " " for doc, _ in docs_with_score]
 
-        return json.dumps({"status": True, "vector_size": len(vectorstore.get()['ids'])})
+        return json.dumps(selector)
     except Exception as err:
         return json.dumps({"error": str(err)})
 }

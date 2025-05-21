@@ -87,4 +87,24 @@ Method GetPrompt(fhirBundle As %String) As %String
     Return prompt
 }
 
+Method GetPromptInsight(analysisReport As %String) As %String
+{
+    Set prompt = "I’m providing a medical/laboratory report along with a related scientific paper content. Please:"_$c(10)_
+        " 1. Analyze the report thoroughly and identify key clinical findings or abnormalities."_$c(10)_
+        " 2. Extract and summarize relevant insights from the scientific paper that directly relate to the findings in the report."_$c(10)_
+        " 3. Integrate those insights to enhance the clinical interpretation of the report — e.g., by clarifying diagnostic value, treatment implications, or monitoring strategies."_$c(10)_
+        " 4. Highlight any limitations or caveats from the paper that may affect applicability to the specific case."_$c(10)_
+        " 5. Make the final output structured in clear sections (e.g., Summary of Findings, Paper Insights, Clinical Integration, Recommendations)."_$c(10)_
+        " --- "_$c(10)_
+        "[medical report]: "_$c(10)_
+        analysisReport
+
+        //"[attach scientific paper content]"
+}
+
+Storage Default
+{
+<Type>%Storage.Persistent</Type>
+}
+
 }
