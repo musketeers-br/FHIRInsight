@@ -13,11 +13,13 @@ XData ProductionDefinition
   <Description></Description>
   <ActorPoolSize>2</ActorPoolSize>
   <Setting Target="Adapter" Name="LLMModel">@FHIR_INSIGHT_LLM_MODEL</Setting>
+  <Item Name="RESTAPI" Category="" ClassName="dc.FHIRInsight.i14y.FHIRAnalysisService" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  </Item>
+  <Item Name="FHIRAnalysis" Category="" ClassName="dc.FHIRInsight.i14y.FHIRAnalysisProcess" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
   <Item Name="LLMService" Category="" ClassName="dc.FHIRInsight.i14y.LLM.Operation.LiteLLMBO" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="APIKeysConfig"></Setting>
     <Setting Target="Adapter" Name="Timeout">30</Setting>
-  </Item>
-  <Item Name="RESTAPI" Category="" ClassName="dc.FHIRInsight.i14y.FHIRAnalysisService" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>
 </Production>
 }

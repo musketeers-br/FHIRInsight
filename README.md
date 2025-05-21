@@ -39,6 +39,9 @@ FHIRInsight utilizes several cutting-edge technologies to perform its task:
    - Another variable is the System LLM Model name: `FHIR_INSIGHT_LLM_MODEL`. The value for this variable follows the [LiteLLM definitions](https://docs.litellm.ai/docs/#basic-usage), which you prefix the model name with its provider. For instance:
      - To set up the OpenAI `o4-mini` model: `export FHIR_INSIGHT_LLM_MODEL=openai/o4-mini`
      - To set up the Anthropic `claude-3-sonnet` model: `export FHIR_INSIGHT_LLM_MODEL=anthropic/claude-3-sonnet`
+   - You can also set up the model by the Production parameter `LLMModel`
+     - By default, this parameter uses a reference to the `FHIR_INSIGHT_LLM_MODEL` environment variable, using the sinxta `@<environment variable>`.
+     - But you can define a model directly, like `openai/gpt-4o`, for instance.
 
 3. **Build the Docker Container**
    - Always use the following command to build the container so that no caching interferes, ensuring a clean build process:
