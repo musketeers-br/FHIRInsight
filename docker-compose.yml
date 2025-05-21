@@ -15,3 +15,21 @@ services:
     environment:
       - FHIR_INSIGHT_LLM_MODEL=${FHIR_INSIGHT_LLM_MODEL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - default
+    
+  streamlit:
+    container_name: fhirinsight-frontend-1
+    build:
+      context: .
+      dockerfile: Dockerfile-streamlit
+    ports:
+      - 8501:8501
+    volumes:
+      - ./python/:/app/
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
