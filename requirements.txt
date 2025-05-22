@@ -8,3 +8,4 @@ langchain
 langchain-iris
 langchain-community
 beautifulsoup4>=4.9.3
+pypdf

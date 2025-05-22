@@ -30,7 +30,6 @@ if uploaded_file is not None:
                 resp = requests.post(
                     ANALYZE_URL,
                     json=payload,
-                    timeout=30,
                     auth=("_SYSTEM", "SYS")
                 )
             except Exception as e:

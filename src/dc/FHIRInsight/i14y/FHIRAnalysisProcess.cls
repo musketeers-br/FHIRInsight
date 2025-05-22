@@ -10,15 +10,36 @@ Method OnRequest(pRequest As dc.FHIRInsight.i14y.FHIRAnalysisBPRequest, Output p
     Set tSC = $$$OK
     
     Try {
-        // Create and configure the LLM request
-        Set llmRequest = ##class(dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest).%New()
-        Set llmRequest.Model = pRequest.Model
-        
         // Build the medical analysis prompt
         Set prompt = ..GetPrompt(pRequest.FHIRBundle)
-        
+        $$$ThrowOnError(..CallLiteLLM(prompt, pRequest.Model, .llmResponse))
+        Set analysisReport = llmResponse.GetFirstCompletion()
+        Set ragContent = ##class(dc.FHIRInsight.Retrieve).RetrieveAnswer(analysisReport)
+        If (ragContent '= "") {
+            Set promptInsight = ..GetPromptInsight(analysisReport, ragContent)
+            $$$ThrowOnError(..CallLiteLLM(promptInsight, pRequest.Model, .insightResponse, 3000))
+            Set analysisReport = insightResponse.GetFirstCompletion()
+        }
+        // Create and populate the response
+        Set pResponse = ##class(dc.FHIRInsight.i14y.FHIRAnalysisBPResponse).%New()
+        Set pResponse.AnalysisResult = analysisReport
+    } Catch ex {
+        Set tSC = $$$ERROR($$$GeneralError,"Error in FHIRAnalysisProcess: "_ex.DisplayString()_" at "_ex.Location)
+    }
+
+    Return tSC
+}
+
+Method CallLiteLLM(pPrompt As %String, pModel As %String, Output pResponse As %Library.Persistent, pTimeout As %Integer = 30) As %Status
+{
+    Set tSC = $$$OK
+	Try {
+        // Create and configure the LLM request
+        Set llmRequest = ##class(dc.FHIRInsight.i14y.LLM.Messages.LiteLLMRequest).%New()
+        Set llmRequest.Model = pModel
+	
         // Add the message using the helper method
-        Set sc = llmRequest.AddMessage("user", prompt)
+        Set sc = llmRequest.AddMessage("user", pPrompt)
         If $$$ISERR(sc) {
             Return $$$ERROR($$$GeneralError, "Failed to construct LLM request: "_$System.Status.GetErrorText(sc))
         }
@@ -27,27 +48,22 @@ Method OnRequest(pRequest As dc.FHIRInsight.i14y.FHIRAnalysisBPRequest, Output p
         Set llmRequest.Parameters = {"temperature":0.7, "max_tokens":2000}.%ToJSON()
         
         // Call the LLM Business Operation
-        Set sc = ..SendRequestSync("LLMService", llmRequest, .llmResponse, 30)
+        Set sc = ..SendRequestSync("LLMService", llmRequest, .pResponse, pTimeout)
         If $$$ISERR(sc) {
             Return $$$ERROR($$$GeneralError, "Failed to call LLM service: "_$System.Status.GetErrorText(sc))
         }
-        If '$IsObject(llmResponse) {
+        If '$IsObject(pResponse) {
             Return $$$ERROR($$$GeneralError, "No response received from LLM service")
         }
         
         // Check for LLM errors
-        If llmResponse.Error '= "" {
-            Set errorInfo = {}.%FromJSON(llmResponse.Error)
+        If pResponse.Error '= "" {
+            Set errorInfo = {}.%FromJSON(pResponse.Error)
             Return $$$ERROR($$$GeneralError, "LLM error: "_$Get(errorInfo.message, "Unknown error"))
         }
-        
-        // Create and populate the response
-        Set pResponse = ##class(dc.FHIRInsight.i14y.FHIRAnalysisBPResponse).%New()
-        Set pResponse.AnalysisResult = llmResponse.GetFirstCompletion()
-    } Catch ex {
-        Set tSC = $$$ERROR($$$GeneralError,"Error in FHIRAnalysisProcess: "_ex.DisplayString()_" at "_ex.Location)
-    }
-
+	} Catch tException {
+		Set:$$$ISOK(tSC) tSC = tException.AsStatus()
+	}
     Return tSC
 }
 
@@ -87,19 +103,29 @@ Method GetPrompt(fhirBundle As %String) As %String
     Return prompt
 }
 
-Method GetPromptInsight(analysisReport As %String) As %String
+Method GetPromptInsight(analysisReport As %String, rag As %String = "") As %String
 {
-    Set prompt = "I’m providing a medical/laboratory report along with a related scientific paper content. Please:"_$c(10)_
+    Set prompt = "I'm providing a medical/laboratory report along with a related scientific paper content. Please:"_$c(10)_
         " 1. Analyze the report thoroughly and identify key clinical findings or abnormalities."_$c(10)_
         " 2. Extract and summarize relevant insights from the scientific paper that directly relate to the findings in the report."_$c(10)_
-        " 3. Integrate those insights to enhance the clinical interpretation of the report — e.g., by clarifying diagnostic value, treatment implications, or monitoring strategies."_$c(10)_
+        " 3. Merge the report with these insights to produce a single, integrated, updated version of the report."_$c(10)_
+        "   - Keep the report’s original structure and tone."_$c(10)_
+        "   - Add the new information in relevant sections."_$c(10)_
+        "   - Clearly mark insights derived from the study when appropriate"_$c(10)_
         " 4. Highlight any limitations or caveats from the paper that may affect applicability to the specific case."_$c(10)_
         " 5. Make the final output structured in clear sections (e.g., Summary of Findings, Paper Insights, Clinical Integration, Recommendations)."_$c(10)_
+        " **Output Format Requirements:**"_$c(10)_
+        " * Use **clear, structured headings** (e.g., `## Summary`, `### Recommendations`)"_$c(10)_
+        " * Use **bullet points, bolding, and subheadings** where appropriate to improve readability."_$c(10)_
+        " My goal is to obtain a comprehensive and enhanced report, ready to be shared or used in a clinical, academic, or communication context."_$c(10)_
         " --- "_$c(10)_
         "[medical report]: "_$c(10)_
-        analysisReport
-
-        //"[attach scientific paper content]"
+        analysisReport_$c(10)_
+        " --- "_$c(10)_
+        "[scientific paper content]: "_$c(10)_
+        rag
+    
+    Return prompt
 }
 
 Storage Default

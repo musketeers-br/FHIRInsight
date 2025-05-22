@@ -38,7 +38,7 @@ ClassMethod RetrieveAnswer(input As %String) As %String [ Language = python ]
             dimension =1536,
             collection_name=iris.cls("dc.FHIRInsight.Ingest")._GetParameter("collectionName")
         )
-        docs_with_score = example_db.similarity_search_with_score(input, k=top_k+top_k)
+        docs_with_score = vectorstore.similarity_search_with_score(input, k=top_k+top_k)
         selector = ["".join(str(doc.page_content)) + " " for doc, _ in docs_with_score]
 
         return json.dumps(selector)
