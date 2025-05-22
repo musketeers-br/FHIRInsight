@@ -111,7 +111,9 @@ FHIRInsight provides a user-friendly frontend page to test and explore the appli
 
 This page allows users to input data, run analyses, and view results directly through a web interface, enhancing the user experience and providing a visual understanding of how FHIRInsight transforms complex JSON data into insightful reports.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/pNae4awjuz4?si=z58vm64882PtbDe2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![See FHIRInsight in action](https://img.youtube.com/vi/pNae4awjuz4/hqdefault.jpg)](https://www.youtube.com/watch?v=pNae4awjuz4?si=z58vm64882PtbDe2)
+
+
 
 ## 🎖️ Credits
 FHIRInsight is developed with ❤️ by the Musketeers Team
