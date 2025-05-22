@@ -4,3 +4,8 @@ openai
 SQLAlchemy
 requests==2.31.0
 litellm
+langchain
+langchain-iris
+langchain-community
+beautifulsoup4>=4.9.3
+pypdf
