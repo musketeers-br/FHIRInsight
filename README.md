@@ -67,6 +67,7 @@ fhirinsight-iris-1  | [INFO]
 You can also checkout the [Production](http://localhost:62773/csp/healthshare/irisapp/EnsPortal.ProductionConfig.zen?PRODUCTION=dc.FHIRInsight.i14y.FHIRAnalyzerProduction) for its status
 
 ## 💡 How to Use
+
 Once FHIRInsight is up and running, you can start converting FHIR JSON data with blood test information into informative reports. Follow these simple steps:
 
 - Select a FHIR Bundle resource with Patient information, like its demographics, Observations, Encounter etc.
@@ -86,6 +87,31 @@ If you use Postman, you can find a collection for your convinience [here](./post
 
 With FHIRInsight, transform the complexity of medical data into clarity, empowering patients and healthcare providers to make informed decisions.
 
+### 📂 FHIR Samples
+In the repository, you will find a directory named `FHIR_Samples` that contains JSON files, each representing a patient. Each patient entry includes an inferred medical condition based on the JSON data. Below is a summary of the patients and their conditions:
+
+| Patient Name      | Condition (Inferred)                               |
+|-------------------|----------------------------------------------------|
+| Carter DUMMY      | Normal (No condition detected)                     |
+| Emily Johnson     | Type 1 Diabetes                                    |
+| Jane Smith        | Hypothyroidism                                     |
+| Joe DUMMY         | Anemia                                             |
+| John Doe          | Liver dysfunction (Hyperbilirubinemia)             |
+| John Ramsey       | Coagulopathy (High INR and PT)                     |
+| Mary Doe          | Type 2 Diabetes                                    |
+| Phillipe DUMMY    | Normal (No condition detected)                     |
+| Sophie D'Abbraccio| Hormonal imbalance (Low Estrogen & Progesterone)   |
+
+These samples serve as a quick reference for testing the application's capabilities to analyze and interpret medical data.
+
+### 🌐 Frontend Testing Interface
+FHIRInsight provides a user-friendly frontend page to test and explore the application's functionalities interactively. This frontend is accessible via the following URL:
+
+- **Frontend Page:** [http://localhost:8501](http://localhost:8501)
+
+This page allows users to input data, run analyses, and view results directly through a web interface, enhancing the user experience and providing a visual understanding of how FHIRInsight transforms complex JSON data into insightful reports.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/pNae4awjuz4?si=z58vm64882PtbDe2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 🎖️ Credits
 FHIRInsight is developed with ❤️ by the Musketeers Team
