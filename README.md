@@ -18,7 +18,7 @@ FHIRInsight utilizes several cutting-edge technologies to perform its task:
 
 2. **InterSystems IRIS**: A high-performance data platform that supports the storage and querying of the data efficiently.
 
-3. ~~**AI Agent using LangChain**~~ (WIP): The analysis and conversion of the raw data into insightful reports are powered by an AI agent developed with the LangChain framework, offering contextual understanding and generating user-friendly reports.
+3. **AI Agent**: The analysis and conversion of the raw data into insightful reports are powered by an AI agent, offering contextual understanding and generating user-friendly reports.
 
 ## 📋 Prerequisites
 - Docker and Docker Compose installed on your machine
