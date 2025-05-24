@@ -68,4 +68,12 @@ ClassMethod StartProduction()
     }
 }
 
+ClassMethod CreateUpdateAPIFromSwagger()
+{
+  Set file = "/home/irisowner/dev/openapi/spec.json"
+  Set obj = ##class(%DynamicAbstractObject).%FromJSONFile(file)
+  Set tSC = ##class(%REST.API).CreateApplication("dc.FHIRInsight.api", .obj)
+  ZW tSC
+}
+
 }
