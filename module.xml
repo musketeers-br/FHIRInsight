@@ -3,7 +3,7 @@
   <Document name="FHIRInsight.ZPM">
     <Module>
       <Name>FHIRInsight</Name>
-      <Version>0.0.19</Version>
+      <Version>0.0.20</Version>
       <Description>Converts FHIR blood test data into a comprehensive, easy-to-understand analysis report.</Description>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
