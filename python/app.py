@@ -143,8 +143,8 @@ st.markdown("<br><br><br>", unsafe_allow_html=True)
 
 # Engine icon at the bottom
 col1, col2, col3 = st.columns([5, 1, 5])
-with col2:
-    if st.button("⚙️", key="engine_button", help="Ingest data into vector database"):
+with col1:
+    if st.button("⚙️", key="engine_button", help="Upload PDFs or URLs with medical research to improve analysis insights."):
         st.session_state.show_ingest_modal = True
         st.rerun()
 
@@ -153,8 +153,7 @@ st.markdown("""
 <style>
     [data-testid="stButton"] button[kind="secondary"] {
         font-size: 2rem;
-        border-radius: 50%;
-        width: 60px;
+        width: 110px;
         height: 60px;
         margin: 20px auto;
     }
