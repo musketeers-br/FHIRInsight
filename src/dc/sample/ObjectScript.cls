@@ -57,7 +57,8 @@ ClassMethod Ingest()
             "https://pubmed.ncbi.nlm.nih.gov/17889075/",
             "https://pubmed.ncbi.nlm.nih.gov/33584164/",
             "https://diabetesjournals.org/care/article/39/4/603/29115/Risk-Factors-Associated-With-Severe-Hypoglycemia",
-            "https://www.bloodresearch.or.kr/journal/view.html?uid=2711&vmd=Full"
+            "https://www.bloodresearch.or.kr/journal/view.html?uid=2711&vmd=Full",
+            "https://www.medrxiv.org/content/10.1101/2024.12.12.24318970v1"
             ]
 
     Quit ##class(dc.FHIRInsight.Ingest).WebIngest(url.%ToJSON())

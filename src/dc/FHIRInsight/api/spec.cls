@@ -67,6 +67,90 @@ XData OpenAPI [ MimeType = application/json ]
           }
         }
       }
+    },
+    "/ingest/pdf":{
+      "post":{
+        "summary":"Ingest PDF documents",
+        "description":"Receive a base64-encoded PDF containing medical research to improve future analysis insights.",
+        "parameters":[
+          {
+            "name":"body",
+            "in":"body",
+            "description":"Payload containing the PDF file as a Base64 string",
+            "required":true,
+            "schema":{
+              "type":"object",
+              "required":[
+                "pdf_base64"
+              ],
+              "properties":{
+                "pdf_base64":{
+                  "type":"string",
+                  "description":"Base64-encoded PDF content"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "202":{
+            "description":"PDF ingestion accepted for processing"
+          },
+          "400":{
+            "description":"Invalid input (missing or malformed pdf_base64)"
+          },
+          "401":{
+            "description":"Unauthorized - Invalid credentials"
+          },
+          "500":{
+            "description":"Internal server error during PDF ingestion"
+          }
+        }
+      }
+    },
+    "/ingest/web":{
+      "post":{
+        "summary":"Ingest web URLs",
+        "description":"Receive an array of URLs pointing to medical research documents to improve future analysis insights.",
+        "parameters":[
+          {
+            "name":"body",
+            "in":"body",
+            "description":"Payload containing an array of URLs",
+            "required":true,
+            "schema":{
+              "type":"object",
+              "required":[
+                "urls"
+              ],
+              "properties":{
+                "urls":{
+                  "type":"array",
+                  "description":"List of HTTP(S) URLs pointing to medical research content",
+                  "items":{
+                    "type":"string",
+                    "format":"uri"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "202":{
+            "description":"URLs accepted for processing"
+          },
+          "400":{
+            "description":"Invalid input (missing or malformed URLs array)"
+          },
+          "401":{
+            "description":"Unauthorized - Invalid credentials"
+          },
+          "500":{
+            "description":"Internal server error during URL ingestion"
+          }
+        }
+      }
     }
   }
 }
