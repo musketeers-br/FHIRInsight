@@ -1,4 +1,4 @@
-Class dc.FHIRInsight.i14y.Ingest.PdfBO Extends Ens.BusinessOperation
+Class dc.FHIRInsight.i14y.Ingest.Operation.PdfBO Extends Ens.BusinessOperation
 {
 
 Parameter INVOCATION = "Queue";

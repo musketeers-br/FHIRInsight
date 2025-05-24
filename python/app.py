@@ -84,9 +84,9 @@ if st.session_state.show_ingest_modal:
                 if st.button("Ingest PDF", type="primary"):
                     with st.spinner("Ingesting PDF..."):
                         try:
-                            files = {"file": (pdf_file.name, pdf_file.read(), "application/pdf")}
+                            files = {"base64": (pdf_file.name, pdf_file.read(), "application/pdf")}
                             resp = requests.post(
-                                INGEST_URL,
+                                f"{INGEST_URL}/pdf",
                                 files=files,
                                 auth=("_SYSTEM", "SYS")
                             )
@@ -115,7 +115,7 @@ if st.session_state.show_ingest_modal:
                     with st.spinner("Ingesting URLs..."):
                         try:
                             resp = requests.post(
-                                INGEST_URL,
+                                f"{INGEST_URL}/web",
                                 json={"urls": urls},
                                 auth=("_SYSTEM", "SYS")
                             )
