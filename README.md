@@ -127,9 +127,9 @@ Submit an array of URLs pointing to medical research or articlesThese documents 
 You can also ingest documents programmatically using the following REST endpoints:
 
 * PDF Ingestion:
-POST /FHIRInsight/ingest/pdfUpload a PDF file with your POST request (as multipart/form-data) for ingestion.
+```POST /FHIRInsight/ingest/pdf ``` Upload a PDF file with your POST request (as multipart/form-data) for ingestion.
 * Web URL Ingestion:
-POST /FHIRInsight/ingest/webSubmit a JSON array of URLs to ingest their textual content.
+```POST /FHIRInsight/ingest/web``` Submit a JSON array of URLs to ingest their textual content.
 
 After ingestion, these documents will help provide more context-aware and robust analysis through FHIRInsight.
 
