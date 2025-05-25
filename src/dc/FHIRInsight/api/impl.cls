@@ -92,8 +92,7 @@ ClassMethod %RouteCB2(body As %DynamicObject) As %Stream.Object
         
         // Return successful response
         Do ..%SetStatusCode(200)
-        Set stream = ##class(%Stream.GlobalCharacter).%New()
-        Do stream.Write(response)
+        Do response.%JSONExportToStream(.stream) 
         Return stream
     } Catch ex {
         // Handle errors
@@ -134,8 +133,7 @@ ClassMethod %RouteCB3(body As %DynamicObject) As %Stream.Object
         
         // Return successful response
         Do ..%SetStatusCode(200)
-        Set stream = ##class(%Stream.GlobalCharacter).%New()
-        Do stream.Write(response)
+        Do response.%JSONExportToStream(.stream) 
         Return stream
     } Catch ex {
         // Handle errors
