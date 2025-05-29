@@ -14,7 +14,7 @@ Method OnRequest(pRequest As dc.FHIRInsight.i14y.FHIRAnalysisBPRequest, Output p
         Set prompt = ..GetPrompt(pRequest.FHIRBundle)
         $$$ThrowOnError(..CallLiteLLM(prompt, pRequest.Model, .llmResponse))
         Set analysisReport = llmResponse.GetFirstCompletion()
-        Set ragContent = ##class(dc.FHIRInsight.Retrieve).RetrieveAnswer(analysisReport)
+        Set ragContent = ##class(dc.FHIRInsight.Retrieve).RetrieveAnswer(analysisReport, pRequest.Model)
         If (ragContent '= "") {
             Set promptInsight = ..GetPromptInsight(analysisReport, ragContent)
             $$$ThrowOnError(..CallLiteLLM(promptInsight, pRequest.Model, .insightResponse, 3000))

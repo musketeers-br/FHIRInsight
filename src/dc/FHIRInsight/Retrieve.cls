@@ -1,7 +1,7 @@
 Class dc.FHIRInsight.Retrieve Extends %RegisteredObject
 {
 
-ClassMethod RetrieveAnswer(input As %String) As %String [ Language = python ]
+ClassMethod RetrieveAnswer(input As %String, pModel As %String = "") As %String [ Language = python ]
 {
     import os
     import json
@@ -12,8 +12,24 @@ ClassMethod RetrieveAnswer(input As %String) As %String [ Language = python ]
     load_dotenv()
 
     embedding = ""
-    llm_model, model_name = os.getenv("FHIR_INSIGHT_LLM_MODEL").split("/")
+    # Handle model string robustly
+    def _split_model(modelstr):
+        parts = modelstr.split("/")
+        if len(parts) == 2:
+            return parts[0], parts[1]
+        elif len(parts) == 1:
+            return parts[0], ""
+        else:
+            raise ValueError(f"Model string '{modelstr}' has unexpected format")
 
+    model_str = os.getenv("FHIR_INSIGHT_LLM_MODEL") if pModel == "" else pModel
+    try:
+        llm_model, model_name = _split_model(model_str)
+    except Exception as err:
+        return json.dumps({"error": f"Invalid model string: {model_str}. Error: {str(err)}"})
+
+    if llm_model == "":
+        return None
     try:
         if llm_model == "openai":
             iris.cls("dc.FHIRInsight.Utils").CheckOpenAi()
