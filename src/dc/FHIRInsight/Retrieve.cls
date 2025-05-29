@@ -29,7 +29,8 @@ ClassMethod RetrieveAnswer(input As %String, pModel As %String = "") As %String 
         return json.dumps({"error": f"Invalid model string: {model_str}. Error: {str(err)}"})
 
     if llm_model == "":
-        return None
+        llm_model = "openai"
+        model_name = "gpt-3.5-turbo"
     try:
         if llm_model == "openai":
             iris.cls("dc.FHIRInsight.Utils").CheckOpenAi()
