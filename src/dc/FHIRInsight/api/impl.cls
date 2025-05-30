@@ -74,7 +74,7 @@ ClassMethod %RouteCB2(body As %DynamicObject) As %Stream.Object
             Throw ##class(%Exception.General).%New("Invalid input","400",,"Failed to convert FHIR Bundle to JSON")
         }
         Set request = ##class(dc.FHIRInsight.i14y.Ingest.Messages.PdfRequest).%New()
-        Set request.base64 = base64.%ToJSON()
+        Set request.base64 = base64
 
         // Get Business Service instance
         Set sc = ##class(Ens.Director).CreateBusinessService("PdfIngest", .businessService)

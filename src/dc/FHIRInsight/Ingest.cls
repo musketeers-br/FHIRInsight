@@ -66,13 +66,13 @@ ClassMethod PdfIngest(pBase64PDF As %String) As %String [ Language = python ]
     from langchain_community.document_loaders import PyPDFLoader
     from langchain_text_splitters import RecursiveCharacterTextSplitter
     from io import BytesIO
+    import tempfile
 
     load_dotenv()
 
     embedding = ""
     llm_model, model_name = os.getenv("FHIR_INSIGHT_LLM_MODEL").split("/")
 
-    urls = json.loads(pURLs)
     try:
         if llm_model == "openai":
             iris.cls("dc.FHIRInsight.Utils").CheckOpenAi()
@@ -92,9 +92,15 @@ ClassMethod PdfIngest(pBase64PDF As %String) As %String [ Language = python ]
 
     try:
         pdf_bytes = base64.b64decode(pBase64PDF)
-        pdf_file = BytesIO(pdf_bytes)
-        loader = PyPDFLoader(pdf_file)  # Pass file-like object, not file path
+        #; pdf_file = BytesIO(pdf_bytes)
+        #; loader = PyPDFLoader(pdf_file)  # Pass file-like object, not file path
+        #; docs = loader.load()
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_file:
+            temp_file.write(pdf_bytes)
+            temp_file_path = temp_file.name
+        loader = PyPDFLoader(temp_file_path)  # Pass the temporary file path
         docs = loader.load()
+        os.remove(temp_file_path)  # Remove the temporary file after use
 
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         splits = text_splitter.split_documents(docs)

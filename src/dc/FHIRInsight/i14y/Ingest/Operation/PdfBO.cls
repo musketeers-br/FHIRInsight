@@ -9,7 +9,7 @@ Method ProcessRequest(pRequest As dc.FHIRInsight.i14y.Ingest.Messages.PdfRequest
         Set tSC = $$$OK
         Try {
                 Set pResponse =  ##class(dc.FHIRInsight.i14y.Ingest.Messages.Response).%New()
-                Set response = {}.%FromJSON(##class(dc.FHIRInsight.Ingest).PdfIngest(pRequest.PdfBase64)) 
+                Set response = {}.%FromJSON(##class(dc.FHIRInsight.Ingest).PdfIngest(pRequest.base64)) 
                 If (response.%Get("error")'="") {
                         Return $$$ERROR($$$GeneralError, response.error)
                 }
